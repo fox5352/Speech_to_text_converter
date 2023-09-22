@@ -16,6 +16,7 @@ def file_listener(recognizer, path):
 
 def converter(recognizer,audio):
     print("processing ...")
+    text = ''
     try:
         # Recognize the speech
         text = recognizer.recognize_google(audio)  # You can use other APIs like recognize_sphinx or recognize_bing
@@ -24,7 +25,16 @@ def converter(recognizer,audio):
     except sr.RequestError as e:
         print(f"Could not request results; {e}")
     print("procesing complete")
+    print()
     return text
+
+def file_writer(file_name, transcript):
+    with open(f'{file_name}.txt', "a") as file:
+        for line in transcript:
+            file.write(f'{line}\n')
+
+    print(f'{file_name}.txt successfully created')   
+    
 
 def main():
     transcript = []
@@ -39,10 +49,20 @@ def main():
         transcript.append(text)
         
         print(f'you said :{text}')
+        print()
         
         if text == "exit":
             said_exit = True
-        
+
+
+    create_file = input("would you like to save transcript to a file? Y/N   :")
+    
+    print(create_file)
+
+    if create_file == "y" or create_file == "Y" :
+        file_name = input("file_name? :")
+        file_writer(file_name, transcript[0:-2])
+
    
     print("program ended")
 
