@@ -1,11 +1,6 @@
 import speech_recognition as sr
 
-def mic_listener(recognizer):
-    with sr.Microphone() as source:
-        print("Mic is open to talk")
-        audio = recognizer.listen(source)
-        print("audio captured")
-        return audio
+from Audio_converter import Converter
 
 def file_listener(recognizer, path):
     with sr.AudioFile(path) as source:
@@ -37,14 +32,15 @@ def file_writer(file_name, transcript):
 
 def main():
     transcript = []
-    recognizer  = sr.Recognizer()
-    
+    stt = Converter()
     said_exit = False    
 
     while not said_exit:
-        audio = mic_listener(recognizer)
-        text = converter(recognizer, audio)
-        
+        print("listening...")
+        audio = stt.lister()
+        print("processing...")
+        text = stt.converter(audio=audio)
+
         transcript.append(text)
         
         print(f'you said :{text}')
@@ -53,7 +49,6 @@ def main():
         if text == "exit":
             said_exit = True
 
-
     create_file = input("would you like to save transcript to a file? Y/N   :")
     
     print(create_file)
@@ -61,8 +56,6 @@ def main():
     if create_file == "y" or create_file == "Y" :
         file_name = input("file_name? :")
         file_writer(file_name, transcript[0:-2])
-
-   
     print("program ended")
 
 
