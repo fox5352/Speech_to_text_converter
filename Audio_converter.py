@@ -9,13 +9,13 @@ class Converter:
         self.recognizer = sr.Recognizer
 
     @staticmethod
-    def lister() -> object:
+    def listener() -> object:
         with sr.Microphone() as source:
             audio = sr.Recognizer().listen(source)
             return audio
 
     @staticmethod
-    def converter(audio: object) -> str:
+    def converter(audio: object, pipe) -> None:
         text = ""
 
         try:
@@ -26,4 +26,4 @@ class Converter:
         except sr.RequestError as e:
             print(f"Could not request results; {e}")
 
-        return text
+        pipe.send(text)
