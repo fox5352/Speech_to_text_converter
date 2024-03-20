@@ -15,7 +15,7 @@ class Converter:
             return audio
 
     @staticmethod
-    def converter(audio: object, pipe) -> None:
+    def converter(audio: object) -> str:
         text = ""
 
         try:
@@ -26,4 +26,4 @@ class Converter:
         except sr.RequestError as e:
             print(f"Could not request results; {e}")
 
-        pipe.send(text)
+        return text
