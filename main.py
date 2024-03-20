@@ -19,42 +19,30 @@ def save_to_file(transcript, file_name) -> None:
 
 
 def main():
-    transcript = []
+    transcript = list()
 
     stt = Converter()
 
     said_exit = False
     
     # process pipeline and list
-    processes = []
+    # processes = []
     parent_pipe, child_pipe = multiprocessing.Pipe()
 
     while not said_exit:
         print("listening...")
         audio = stt.listener()
         
+        text = stt.converter(audio)
+        print(text)
+        transcript.append(text)
 
-        # creates a process with a pipeline 
-        p = multiprocessing.Process(target=stt.converter, args=(audio, child_pipe))
-        # starts the conversion on that process
-        p.start()
-        # adds the process to the list of processes
-        processes.append(p)
-
-        # checks if the pipeline signals the process is finished
-        # retrieves the data from the process and writes it to the transcript 
-        if parent_pipe.poll():            
-            data = parent_pipe.recv()
-            transcript.append(data)
-        
         # if the transcript is not empty
         # if the transcript has the word exit in it ends all process and exit program
         if len(transcript) > 0:
-            if transcript[len(transcript) - 1] == "exit":
-                said_exit = True
-                for p in processes:
-                    p.terminate()
-                break
+            for sentence in transcript:
+                if "exit" in sentence:
+                    said_exit = True
 
     # asks to save the transcript to a file
     save_file = input("save data to file y/n :")
@@ -62,7 +50,6 @@ def main():
     # save the transcript to a file with the input data
     if save_file.lower() == "y":
         save_to_file(transcript[0:-1], input("file name: "))
-
 
 if __name__ == "__main__":
     main()
